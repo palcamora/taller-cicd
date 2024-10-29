@@ -23,3 +23,26 @@ jobs:
       
       - name: Run tests
         run: mvn test
+  
+  build: 
+    runs-on: ubuntu-latest
+    needs: test
+
+    steps:
+      - name: Checkout repositroy
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'adopt'
+          java-version: 11
+
+      - name: Build and package application
+        run: mvn package -DskipTests
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: java-app
+          path: target/*.jar
