@@ -46,3 +46,26 @@ jobs:
         with:
           name: java-app
           path: target/*.jar
+
+  docker:
+    runs-on: ubuntu-latest
+    environment: pro
+    needs: build
+
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: java-app
+      
+      - name: Login Docker Hub
+        uses: actions/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}  
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      
+      - name: Build Docker image
+        run: docker build -t palcamora/taller-cicd:latest .
+
+      - name: Push Docker image
+        run: docker push palcamora/taller-cicd:latest
